@@ -1,21 +1,22 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 
-import Sidebar from './Components/Sidebar';
-import Navbar from './Components/Navbar';
-import Cards from './Components/Cards';
+// import Post from './Pages/Post';
+import Auth from './Pages/Auth';
+import Home from './Pages/Home';
+import Post from './Pages/Post';
 
 function App() {
   return (
-    <div className='App'>
-      <div className='wrapper'>
-        <Sidebar />
-        <div id='content'>
-          <Navbar />
-          <Cards />
-        </div>
-      </div>
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path='/' component={Home} />
+        <Route path='/login' component={Auth} />
+        <Route path='/register' component={Auth} />
+        <Route exact path='/show/:id' component={Post} />
+      </Switch>
+    </Router>
   );
 }
 

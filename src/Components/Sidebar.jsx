@@ -10,8 +10,8 @@ export default class Sidebar extends Component {
           </div>
 
           <ul className='list-unstyled components'>
-            <p>Avatar Here</p>
-            <li className='active'>
+            <p className='text-dark'>Avatar Here</p>
+            <li>
               <a
                 href='#homeSubmenu'
                 data-toggle='collapse'
@@ -22,18 +22,18 @@ export default class Sidebar extends Component {
               </a>
               <ul className='collapse list-unstyled' id='homeSubmenu'>
                 <li>
-                  <a href='#'>Home 1</a>
+                  <a href='google.com'>Home 1</a>
                 </li>
                 <li>
-                  <a href='#'>Home 2</a>
+                  <a href='google.com'>Home 2</a>
                 </li>
                 <li>
-                  <a href='#'>Home 3</a>
+                  <a href='google.com'>Home 3</a>
                 </li>
               </ul>
             </li>
             <li>
-              <a href='#'>About</a>
+              <a href='google.com'>About</a>
             </li>
             <li>
               <a
@@ -46,21 +46,21 @@ export default class Sidebar extends Component {
               </a>
               <ul className='collapse list-unstyled' id='pageSubmenu'>
                 <li>
-                  <a href='#'>Page 1</a>
+                  <a href='google.com'>Page 1</a>
                 </li>
                 <li>
-                  <a href='#'>Page 2</a>
+                  <a href='google.com'>Page 2</a>
                 </li>
                 <li>
-                  <a href='#'>Page 3</a>
+                  <a href='google.com'>Page 3</a>
                 </li>
               </ul>
             </li>
             <li>
-              <a href='#'>Portfolio</a>
+              <a href='google.com'>Portfolio</a>
             </li>
             <li>
-              <a href='#'>Contact</a>
+              <a href='google.com'>Contact</a>
             </li>
           </ul>
 

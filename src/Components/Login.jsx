@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Axios from 'axios';
+// import Axios from 'axios';
+import AuthService from './AuthService';
 
 class Login extends Component {
   constructor() {
@@ -12,19 +13,39 @@ class Login extends Component {
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangePass = this.handleChangePass.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.Auth = new AuthService();
   }
 
+  // componentDidMount() {
+  //   if (this.Auth.loggedIn()) {
+  //     alert('You already login previously');
+  //     window.location = '/';
+  //   }
+  // }
   handleSubmit = e => {
     e.preventDefault();
-    Axios.post('http://localhost:8080/login', {
-      username: this.state.username,
-      password: this.state.password
-    })
+    // Axios.post('http://localhost:8080/login', {
+    //   username: this.state.username,
+    //   password: this.state.password
+    // })
+    //   .then(res => {
+    //     console.log(res);
+    //     console.log('status =', res.status);
+    //   })
+    //   .catch(err => console.log('error =', err));
+    this.Auth.login(this.state.username, this.state.password)
       .then(res => {
-        console.log('username =', this.state.username);
-        window.location = '/';
+        console.log(res);
+        if (res.status === 200) {
+          window.location = '/';
+        } else {
+          alert(res.message);
+          window.location.reload();
+        }
       })
-      .catch(err => console.log('error =', err));
+      .catch(err => {
+        alert(err);
+      });
   };
   handleChangeName = e => {
     this.setState({ username: e.target.value });

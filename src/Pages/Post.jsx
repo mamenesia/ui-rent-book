@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+// import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,7 +17,12 @@ import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import Chip from '@material-ui/core/Chip';
 
+import EditBookModal from '../Components/EditBookModal';
 import './style.css';
+
+import AuthService from '../Components/AuthService';
+
+const Auth = new AuthService();
 
 export default class Blog extends Component {
   constructor(props) {
@@ -37,8 +43,39 @@ export default class Blog extends Component {
       .then(res => {
         this.setState({ books: res.data.result[0] });
         console.log(res);
+        console.log(this.state);
         console.log(this.props.match);
       })
+      .catch(err => console.log(err));
+  };
+
+  handleButton = e => {
+    if (String(e.target.value) === 'Available') {
+      Axios.patch(
+        `http://localhost:8080/books/rent/${this.props.match.params.id}`
+      )
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => console.log(err));
+    } else {
+      Axios.patch(
+        `http://localhost:8080/books/return/${this.props.match.params.id}`
+      )
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => console.log(err));
+    }
+  };
+
+  handleBackButton = e => {
+    window.location = '/';
+  };
+
+  handleDeleteButton = e => {
+    Axios.delete(`http://localhost:8080/books/${this.props.match.params.id}`)
+      .then(res => (window.location = '/'))
       .catch(err => console.log(err));
   };
   render() {
@@ -55,28 +92,37 @@ export default class Blog extends Component {
               alignItems='baseline'
             >
               <Grid item sm={9}>
-                <IconButton>
+                <IconButton onClick={this.handleBackButton} color='secondary'>
                   <ArrowBackIcon />
                 </IconButton>
               </Grid>
-              <Grid item sm={1}>
-                <Button
-                  href='#text-buttons'
-                  color='secondary'
-                  className='button'
-                >
-                  Edit
-                </Button>
-              </Grid>
-              <Grid item sm={1}>
-                <Button
-                  href='#text-buttons'
-                  color='secondary'
-                  className='button'
-                >
-                  Delete
-                </Button>
-              </Grid>
+              <div className={`${!Auth.loggedIn() ? 'd-none' : ''}`}>
+                <Grid item sm={1}>
+                  <Button
+                    color='secondary'
+                    size='medium'
+                    className='button nav-link font-weight-bold'
+                    data-toggle='modal'
+                    data-target='#EditBookModal'
+                  >
+                    Edit
+                  </Button>
+                </Grid>
+              </div>
+              <div className={`${!Auth.loggedIn() ? 'd-none' : ''}`}>
+                <Grid item sm={1}>
+                  <Button
+                    color='secondary'
+                    className='button font-weight-bold'
+                    size='medium'
+                    data-toggle='modal'
+                    data-target='#DeleteModal'
+                    onClick={this.handleDeleteButton}
+                  >
+                    Delete
+                  </Button>
+                </Grid>
+              </div>
             </Grid>
           </Toolbar>
           <main>
@@ -160,29 +206,11 @@ export default class Blog extends Component {
                   color='textSecondary'
                   gutterBottom
                 >
-                  {books.released_at}
+                  {String(Date(books.released_at)).substr(0, 16)}
                 </Typography>
                 <Divider />
                 <Typography align='justify' variant='body1'>
-                  Was there a beginning of time? Could time run backwards? Is
-                  the universe infinite or does it have boundaries? These are
-                  just some of the questions considered in the internationally
-                  acclaimed masterpiece by the world renowned physicist -
-                  generally considered to have been one of the world's greatest
-                  thinkers. It begins by reviewing the great theories of the
-                  cosmos from Newton to Einstein, before delving into the
-                  secrets which still lie at the heart of space and time, from
-                  the Big Bang to black holes, via spiral galaxies and strong
-                  theory. To this day A Brief History of Time remains a staple
-                  of the scientific canon, and its succinct and clear language
-                  continues to introduce millions to the universe and its
-                  wonders. This new edition includes recent updates from Stephen
-                  Hawking with his latest thoughts about the No Boundary
-                  Proposal and offers new information about dark energy, the
-                  information paradox, eternal inflation, the microwave
-                  background radiation observations, and the discovery of
-                  gravitational waves. It was published in tandem with the app,
-                  Stephen Hawking's Pocket Universe.
+                  {books.desc}
                 </Typography>
               </Grid>
               {/* End main content */}
@@ -196,23 +224,28 @@ export default class Blog extends Component {
                 xs={12}
                 md={4}
               >
-                <Grid item>
-                  <Button
-                    variant='contained'
-                    color='secondary'
-                    href='#contained-buttons'
-                    className='button'
-                    size='large'
-                    fullWidth={true}
-                  >
-                    {books.status === 'Available' ? 'Borrow' : 'Return'}
-                  </Button>
-                </Grid>
+                <div className={`${!Auth.loggedIn() ? 'd-none' : ''}`}>
+                  <Grid item>
+                    <Button
+                      variant='contained'
+                      color='secondary'
+                      // href='#contained-buttons'
+                      className='button'
+                      size='large'
+                      fullWidth={true}
+                      onClick={this.handleButton}
+                      value={books.status}
+                    >
+                      {books.status === 'Available' ? 'Borrow' : 'Return'}
+                    </Button>
+                  </Grid>
+                </div>
               </Grid>
               {/* End sidebar */}
             </Grid>
           </main>
         </Container>
+        <EditBookModal data={this.state} props={this.props} />
       </Fragment>
     );
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
+import AuthService from './AuthService';
 
 class Register extends Component {
   constructor() {
@@ -15,6 +16,7 @@ class Register extends Component {
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleChangePass = this.handleChangePass.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.Auth = new AuthService();
   }
 
   handleSubmit = e => {
@@ -25,10 +27,17 @@ class Register extends Component {
       password: this.state.password
     })
       .then(res => {
-        console.log('username =', this.state.username);
-        window.location = '/login';
+        console.log(res.data);
+        if (res.status === 200) {
+          alert(res.data.message);
+          window.location = '/login';
+        }
       })
-      .catch(err => console.log('error =', err));
+      .then(res => console.log(res))
+      .catch(err => {
+        alert('Please input valid data');
+        console.log('error =', err);
+      });
   };
   handleChangeName = e => {
     this.setState({ username: e.target.value });

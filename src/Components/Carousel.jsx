@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import 'react-id-swiper/lib/styles/scss/swiper.scss';
 import 'react-id-swiper/lib/styles/css/swiper.css';
@@ -17,8 +18,8 @@ const params = {
     prevEl: '.swiper-button-prev'
   },
   autoplay: {
-    delay: 1000,
-    disableOnInteraction: false
+    delay: 1500,
+    disableOnInteraction: true
   },
   coverflowEffect: {
     rotate: 20,
@@ -26,7 +27,8 @@ const params = {
     depth: 150,
     modifier: 1,
     slideShadows: false
-  }
+  },
+  observer: true
 };
 
 class Carousel extends Component {
@@ -54,7 +56,9 @@ class Carousel extends Component {
           return (
             <div key={index} style={{ textAlign: 'center', margin: '10px 0' }}>
               <div style={{ display: 'inline-block', maxWidth: 500 }}>
-                <img src={item.image_url} alt={item.title} />
+                <Link to={`/show/${item.book_id}`} underline='none'>
+                  <img src={item.image_url} alt={item.title} />
+                </Link>
               </div>
             </div>
           );

@@ -1,88 +1,68 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
+
+import AddBookModal from './AddBookModal';
+import AuthService from './AuthService';
+import AdminImg from '../Admin.png';
+import UserImg from '../User.jpg';
+
+const Auth = new AuthService();
 
 export default class Sidebar extends Component {
   render() {
     return (
       <Fragment>
         <nav id='sidebar'>
-          <div className='sidebar-header'>
+          <div className='sidebar-header text-center '>
             <h3>Library App</h3>
           </div>
 
           <ul className='list-unstyled components'>
-            <p className='text-dark'>Avatar Here</p>
+            <img
+              src={`${!Auth.loggedIn() ? AdminImg : UserImg}`}
+              className='d-flex justify-center'
+              alt='avatar img'
+              style={{
+                margin: 'auto',
+                verticalAlign: 'middle',
+                horizontalAlign: 'middle',
+                width: '150px',
+                height: '150px',
+                borderRadius: '50%'
+              }}
+            />
+            <p className='text-dark text-center font-weight-bold'>
+              {`${!Auth.loggedIn() ? 'Ordinary User' : 'User with Dedy Pic'}`}
+            </p>
             <li>
-              <a
-                href='#homeSubmenu'
-                data-toggle='collapse'
-                aria-expanded='false'
-                className='dropdown-toggle'
-              >
-                Home
-              </a>
-              <ul className='collapse list-unstyled' id='homeSubmenu'>
-                <li>
-                  <a href='google.com'>Home 1</a>
-                </li>
-                <li>
-                  <a href='google.com'>Home 2</a>
-                </li>
-                <li>
-                  <a href='google.com'>Home 3</a>
-                </li>
-              </ul>
+              <Link to='/explore' underline='none'>
+                <a href='#' className='nav-link font-weight-bold'>
+                  Explore
+                </a>
+              </Link>
             </li>
             <li>
-              <a href='google.com'>About</a>
+              <Link>
+                <a href='#' className='nav-link font-weight-bold'>
+                  History
+                </a>
+              </Link>
             </li>
-            <li>
-              <a
-                href='#pageSubmenu'
-                data-toggle='collapse'
-                aria-expanded='false'
-                className='dropdown-toggle'
-              >
-                Pages
-              </a>
-              <ul className='collapse list-unstyled' id='pageSubmenu'>
-                <li>
-                  <a href='google.com'>Page 1</a>
-                </li>
-                <li>
-                  <a href='google.com'>Page 2</a>
-                </li>
-                <li>
-                  <a href='google.com'>Page 3</a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a href='google.com'>Portfolio</a>
-            </li>
-            <li>
-              <a href='google.com'>Contact</a>
-            </li>
-          </ul>
-
-          <ul className='list-unstyled CTAs'>
-            <li>
-              <a
-                href='https://bootstrapious.com/tutorial/files/sidebar.zip'
-                className='download'
-              >
-                Download source
-              </a>
-            </li>
-            <li>
-              <a
-                href='https://bootstrapious.com/p/bootstrap-sidebar'
-                className='article'
-              >
-                Back to article
-              </a>
+            <li className={`${!Auth.loggedIn() ? 'd-none' : ''}`}>
+              <Link>
+                <a
+                  href='#'
+                  className='nav-link font-weight-bold'
+                  data-toggle='modal'
+                  data-target='#AddBookModal'
+                >
+                  Add Book
+                </a>
+              </Link>
             </li>
           </ul>
         </nav>
+        <AddBookModal />
       </Fragment>
     );
   }

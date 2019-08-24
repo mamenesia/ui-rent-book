@@ -74,9 +74,7 @@ class GridCard extends Component {
               );
             })
           ) : (
-            <p style={{ fontSize: 100, marginBottom: '50vh' }}>
-              Loading Fetch...
-            </p>
+            <p style={{ fontSize: 80, marginTop: '50vh' }}>Loading ...</p>
           )}
         </Grid>
       </Fragment>

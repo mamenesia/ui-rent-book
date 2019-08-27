@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import Axios from 'axios';
+import { connect } from 'react-redux';
+import { getGenres } from '../Public/Actions/genres';
 
-export default class AddBookModal extends Component {
+class AddBookModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,7 +13,7 @@ export default class AddBookModal extends Component {
       desc: null,
       released_at: null,
       available: null,
-      books: []
+      genres: []
     };
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleChangeImage = this.handleChangeImage.bind(this);
@@ -59,18 +61,13 @@ export default class AddBookModal extends Component {
     this.setState({ released_at: e.target.value });
   };
 
-  componentDidMount = () => {
-    Axios.get('http://localhost:8080/books/genre', {
-      headers: {
-        Authorization: process.env.REACT_APP_KEY
-      }
-    })
-      .then(res => {
-        this.setState({ books: res.data.result });
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    await this.props.dispatch(getGenres());
+    this.setState({ genres: this.props.genres });
+    console.log(this.props);
   };
   render() {
+    const { genres } = this.state;
     return (
       <Fragment>
         <div id='AddBookModal' className='modal' tabindex='-1' role='dialog'>
@@ -155,13 +152,15 @@ export default class AddBookModal extends Component {
                       name='genre'
                       onChange={this.handleChangeGenre}
                     >
-                      {this.state.books.map((item, index) => {
-                        return (
-                          <option key={index} value={item.genre_id}>
-                            {item.genre}
-                          </option>
-                        );
-                      })}
+                      {genres.genreList
+                        ? genres.genreList.map((item, index) => {
+                            return (
+                              <option key={index} value={item.genre_id}>
+                                {item.genre}
+                              </option>
+                            );
+                          })
+                        : 'Loading Fetching Genres...'}
                     </select>
                   </div>
                   <div className='form-group row d-flex justify-content-around'>
@@ -217,3 +216,9 @@ export default class AddBookModal extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return { genres: state.genres };
+};
+
+export default connect(mapStateToProps)(AddBookModal);

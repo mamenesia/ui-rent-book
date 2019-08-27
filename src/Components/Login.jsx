@@ -16,12 +16,6 @@ class Login extends Component {
     this.Auth = new AuthService();
   }
 
-  // componentDidMount() {
-  //   if (this.Auth.loggedIn()) {
-  //     alert('You already login previously');
-  //     window.location = '/';
-  //   }
-  // }
   handleSubmit = e => {
     e.preventDefault();
     // Axios.post('http://localhost:8080/login', {

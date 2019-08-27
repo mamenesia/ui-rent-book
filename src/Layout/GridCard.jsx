@@ -2,33 +2,26 @@ import React, { Component, Fragment } from 'react';
 // import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import Axios from 'axios';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import { connect } from 'react-redux';
+import { getBooks } from '../Public/Actions/books';
 
-// import CardCustom from '../Components/CardCustom';
 class GridCard extends Component {
   state = {
-    books: []
+    getBooks: []
   };
 
-  componentDidMount = () => {
-    Axios.get('http://localhost:8080/books', {
-      headers: {
-        Authorization: process.env.REACT_APP_KEY
-      }
-    })
-      .then(res => {
-        this.setState({ books: res.data.result });
-        console.log(res);
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    await this.props.dispatch(getBooks());
+    this.setState({ getBooks: this.props.books });
+    console.log(this.props);
   };
   render() {
-    const { books } = this.state;
+    const { getBooks } = this.state;
     return (
       <Fragment>
         <Typography variant='h4' className='my-4'>
@@ -41,8 +34,8 @@ class GridCard extends Component {
           justify='center'
           alignItems='flex-end'
         >
-          {books.length > 0 ? (
-            books.map((item, index) => {
+          {getBooks.bookList ? (
+            getBooks.bookList.map((item, index) => {
               return (
                 <Grid key={index} item xs={10} sm={6} md={4}>
                   <Link to={`/show/${item.book_id}`} underline='none'>
@@ -82,4 +75,8 @@ class GridCard extends Component {
   }
 }
 
-export default GridCard;
+const mapStateToProps = state => {
+  return { books: state.books };
+};
+
+export default connect(mapStateToProps)(GridCard);

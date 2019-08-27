@@ -1,24 +1,18 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getGenres } from '../Public/Actions/genres';
 
-export default class Categories extends Component {
+class Categories extends Component {
   state = {
     genre: []
   };
 
-  componentDidMount = () => {
-    Axios.get('http://localhost:8080/books/genre', {
-      headers: {
-        Authorization: process.env.REACT_APP_KEY
-      }
-    })
-      .then(res => {
-        this.setState({ genre: res.data.result });
-        console.log(this.state);
-        console.log(this.props);
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    await this.props.dispatch(getGenres());
+    this.setState({ genre: this.props.genres });
+    console.log(this.props);
   };
   render() {
     const { genre } = this.state;
@@ -36,18 +30,26 @@ export default class Categories extends Component {
             All Categories
           </button>
           <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
-            {genre.map((item, index) => {
-              return (
-                <Link to={`/genre/${item.genre}`}>
-                  <button key={index} className='dropdown-item' type='button'>
-                    {item.genre}
-                  </button>
-                </Link>
-              );
-            })}
+            {genre.genreList
+              ? genre.genreList.map((item, index) => {
+                  return (
+                    <Link to={`/genre/${item.genre}`} key={index}>
+                      <button className='dropdown-item' type='button'>
+                        {item.genre}
+                      </button>
+                    </Link>
+                  );
+                })
+              : 'Loading Fetching Genres...'}
           </div>
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return { genres: state.genres };
+};
+
+export default connect(mapStateToProps)(Categories);

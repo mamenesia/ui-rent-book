@@ -73,19 +73,6 @@ class Register extends Component {
                 onChange={this.handleChangeName}
               />
             </div>
-            {/* <div className='FormField'>
-              <label className='FormField__Label' htmlFor='name'>
-                Full Name
-              </label>
-              <input
-                type='text'
-                id='name'
-                className='FormField__Input'
-                placeholder='Enter your full name'
-                name='name'
-                onChange={this.handleChange}
-              />
-            </div> */}
 
             <div className='FormField'>
               <label className='FormField__Label' htmlFor='email'>

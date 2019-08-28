@@ -20,7 +20,8 @@ class Categories extends Component {
       <div>
         <div className='dropdown mx-4'>
           <button
-            className='btn btn-white dropdown-toggle'
+            className='btn dropdown-toggle font-weight-bold btn-link'
+            style={{ boreder: 'none' }}
             type='button'
             id='dropdownMenu2'
             data-toggle='dropdown'

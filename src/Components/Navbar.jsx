@@ -84,27 +84,33 @@ export default class Navbar extends Component {
                 </li>
                 <li className={`nav-item ${Auth.loggedIn() ? 'd-none' : ''}`}>
                   <Link to='/login' underline='none'>
-                    <a className='nav-link font-weight-bold' href='#'>
+                    <button
+                      className='nav-link font-weight-bold btn-link'
+                      style={{ border: 'none' }}
+                    >
                       Login
-                    </a>
+                    </button>
                   </Link>
                 </li>
                 <li className={`nav-item ${Auth.loggedIn() ? 'd-none' : ''}`}>
                   <Link to='/register' underline='none'>
-                    <a className='nav-link font-weight-bold' href='#'>
+                    <button
+                      className='nav-link font-weight-bold btn-link'
+                      style={{ border: 'none' }}
+                    >
                       Register
-                    </a>
+                    </button>
                   </Link>
                 </li>
                 <li className={`nav-item ${Auth.loggedIn() ? '' : 'd-none'}`}>
                   <Link to='/login' underline='none'>
-                    <a
-                      className='nav-link'
-                      href='#'
+                    <button
+                      className='nav-link font-weight-bold btn-link'
+                      style={{ border: 'none' }}
                       onClick={this.handleLogout.bind(this)}
                     >
                       Logout
-                    </a>
+                    </button>
                   </Link>
                 </li>
                 <li>

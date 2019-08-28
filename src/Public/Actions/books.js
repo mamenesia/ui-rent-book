@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 export const getBooks = (
-  limit = 12,
+  limit = null,
   page = 1,
   sort = 'released_at',
   order = 'DESC',
@@ -11,7 +11,7 @@ export const getBooks = (
 
   const querySearch = (search !== null) ? `&search=${search}` : '';
   const queryGenre = (genre !== null) ? `&genre=${genre}` : '';
-  const queryLimit = `&limit=${limit}`
+  const queryLimit = (limit !== null) ? `&limit=${limit}` : '';
   return {
     type: 'GET_BOOKS',
     payload: Axios.get(`http://localhost:8080/books?page=${page}&sort=${sort}&order=${order}${querySearch}${queryGenre}${queryLimit}`)

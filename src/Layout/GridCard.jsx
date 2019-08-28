@@ -8,12 +8,15 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
+import Pagination from '../Components/Pagination';
 import { connect } from 'react-redux';
 import { getBooks } from '../Public/Actions/books';
 
 class GridCard extends Component {
   state = {
-    getBooks: []
+    getBooks: [],
+    currentPage: 1,
+    numPerPage: 12
   };
 
   componentDidMount = async () => {
@@ -21,8 +24,14 @@ class GridCard extends Component {
     this.setState({ getBooks: this.props.books });
     console.log(this.props);
   };
+
   render() {
-    const { getBooks } = this.state;
+    const { getBooks, currentPage, numPerPage } = this.state;
+    const indexOfLastBook = currentPage * numPerPage;
+    const indexOfFirstBook = indexOfLastBook - numPerPage;
+    // const currentBooks = getBooks.slice(indexOfFirstBook, indexOfLastBook);
+
+    const paginate = pageNumber => this.setState({ currentPage: pageNumber });
     return (
       <Fragment>
         <Typography variant='h4' className='my-4'>
@@ -36,59 +45,74 @@ class GridCard extends Component {
           alignItems='flex-end'
         >
           {getBooks.bookList ? (
-            getBooks.bookList.map((item, index) => {
-              return (
-                <Grid key={index} item xs={10} sm={6} md={4}>
-                  <Link to={`/show/${item.book_id}`} underline='none'>
-                    <Card style={{ maxWidth: 'auto', borderRadius: 30 }}>
-                      <CardActionArea>
-                        <CardMedia
-                          component='img'
-                          alt={item.title}
-                          height='200'
-                          image={item.image_url}
-                          title={item.title}
-                        />
-                        <CardContent>
-                          <Chip
-                            size='small'
-                            label={item.status}
-                            color={
-                              // eslint-disable-next-line eqeqeq
-                              item.status == 'Available'
-                                ? 'primary'
-                                : 'secondary'
-                            }
+            getBooks.bookList
+              .slice(indexOfFirstBook, indexOfLastBook)
+              .map((item, index) => {
+                return (
+                  <Grid key={index} item xs={10} sm={6} md={4}>
+                    <Link to={`/show/${item.book_id}`} underline='none'>
+                      <Card style={{ maxWidth: 'auto', borderRadius: 30 }}>
+                        <CardActionArea>
+                          <CardMedia
+                            component='img'
+                            alt={item.title}
+                            height='200'
+                            image={item.image_url}
+                            title={item.title}
                           />
-                          <Chip
-                            size='small'
-                            variant='outlined'
-                            label={item.genre}
-                          />
+                          <CardContent>
+                            <Chip
+                              size='small'
+                              label={item.status}
+                              color={
+                                // eslint-disable-next-line eqeqeq
+                                item.status == 'Available'
+                                  ? 'primary'
+                                  : 'secondary'
+                              }
+                            />
+                            <Chip
+                              size='small'
+                              variant='outlined'
+                              label={item.genre}
+                            />
 
-                          <Typography gutterBottom variant='h6' component='h2'>
-                            {item.title.length > 27
-                              ? item.title.substr(0, 27) + '...'
-                              : item.title}
-                          </Typography>
-                          <Typography
-                            variant='body2'
-                            color='textSecondary'
-                            component='p'
-                          >
-                            {item.desc.substr(0, 100)}...
-                          </Typography>
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
-                  </Link>
-                </Grid>
-              );
-            })
+                            <Typography
+                              gutterBottom
+                              variant='h6'
+                              component='h2'
+                            >
+                              {item.title.length > 27
+                                ? item.title.substr(0, 27) + '...'
+                                : item.title}
+                            </Typography>
+                            <Typography
+                              variant='body2'
+                              color='textSecondary'
+                              component='p'
+                            >
+                              {item.desc.substr(0, 100)}...
+                            </Typography>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </Link>
+                  </Grid>
+                );
+              })
           ) : (
             <p style={{ fontSize: 80, marginTop: '50vh' }}>Loading ...</p>
           )}
         </Grid>
+        {getBooks.bookList ? (
+          <Pagination
+            numPerPage={numPerPage}
+            totalBooks={getBooks.bookList.length}
+            paginate={paginate}
+          />
+        ) : (
+          ''
+        )}
       </Fragment>
     );
   }

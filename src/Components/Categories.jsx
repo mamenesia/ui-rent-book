@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
+// import Axios from 'axios';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getGenres } from '../Public/Actions/genres';

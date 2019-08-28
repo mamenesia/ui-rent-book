@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import Axios from 'axios';
+// import Axios from 'axios';
+import { connect } from 'react-redux';
+import { getGenres } from '../Public/Actions/genres';
+import { updateBook } from '../Public/Actions/books';
 
-export default class EditBookModal extends Component {
+class EditBookModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -9,7 +12,7 @@ export default class EditBookModal extends Component {
       image: null,
       genre: null,
       desc: null,
-      books: []
+      genres: []
     };
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleChangeImage = this.handleChangeImage.bind(this);
@@ -18,21 +21,27 @@ export default class EditBookModal extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
-    Axios.patch(
-      `http://localhost:8080/books/${this.props.props.match.params.id}`,
-      {
-        title: this.state.title,
-        image: this.state.image,
-        genre: this.state.genre,
-        desc: this.state.desc
-      }
-    )
-      .then(res => {
-        window.location.reload(true);
-      })
-      .catch(err => console.log(err));
+    const { title, image, genre, desc } = this.state;
+    const book_id = this.props.props.match.params.id;
+    await this.props.dispatch(updateBook(book_id, title, image, genre, desc));
+    console.log(this.state);
+    console.log(this.props);
+    window.location.reload();
+    // Axios.patch(
+    //   `http://localhost:8080/books/${this.props.props.match.params.id}`,
+    //   {
+    //     title: this.state.title,
+    //     image: this.state.image,
+    //     genre: this.state.genre,
+    //     desc: this.state.desc
+    //   }
+    // )
+    //   .then(res => {
+    //     window.location.reload(true);
+    //   })
+    //   .catch(err => console.log(err));
   };
 
   handleChangeTitle = e => {
@@ -50,23 +59,27 @@ export default class EditBookModal extends Component {
     this.setState({ desc: e.target.value });
   };
 
-  componentDidMount = () => {
-    Axios.get(`http://localhost:8080/books/genre`, {
-      headers: {
-        Authorization: process.env.REACT_APP_KEY
-      }
-    })
-      .then(res => {
-        this.setState({ books: res.data.result });
-        console.log(this.state);
-        console.log(this.props.props.match.params.id);
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    await this.props.dispatch(getGenres());
+    this.setState({ genres: this.props.genres });
+    console.log(this.props);
+    // Axios.get(`http://localhost:8080/books/genre`, {
+    //   headers: {
+    //     Authorization: process.env.REACT_APP_KEY
+    //   }
+    // })
+    //   .then(res => {
+    //     this.setState({ books: res.data.result });
+    //     console.log(this.state);
+    //     console.log(this.props.props.match.params.id);
+    //   })
+    //   .catch(err => console.log(err));
   };
   render() {
+    const { genres } = this.state;
     return (
       <Fragment>
-        <div id='EditBookModal' className='modal' tabindex='-1' role='dialog'>
+        <div id='EditBookModal' className='modal' tabIndex='-1' role='dialog'>
           <div className='modal-dialog modal-lg' role='document'>
             <div className='modal-content'>
               <div className='modal-header'>
@@ -100,6 +113,7 @@ export default class EditBookModal extends Component {
                       placeholder='The Book Title'
                       defaultValue={this.props.data.books.title}
                       onChange={this.handleChangeTitle}
+                      required
                     />
                   </div>
                   <div className='form-group row d-flex justify-content-around'>
@@ -118,6 +132,7 @@ export default class EditBookModal extends Component {
                       placeholder='Book Cover Url'
                       defaultValue={this.props.data.books.image_url}
                       onChange={this.handleChangeImage}
+                      required
                     />
                   </div>
                   <div className='form-group row d-flex justify-content-around'>
@@ -132,15 +147,18 @@ export default class EditBookModal extends Component {
                       id='genre'
                       name='genre'
                       onChange={this.handleChangeGenre}
+                      required
                     >
                       <option>{this.props.data.books.genre}</option>
-                      {this.state.books.map((item, index) => {
-                        return (
-                          <option key={index} value={item.genre_id}>
-                            {item.genre}
-                          </option>
-                        );
-                      })}
+                      {genres.genreList
+                        ? genres.genreList.map((item, index) => {
+                            return (
+                              <option key={index} value={item.genre_id}>
+                                {item.genre}
+                              </option>
+                            );
+                          })
+                        : 'Loading Genres...'}
                     </select>
                   </div>
                   <div className='form-group row d-flex justify-content-around'>
@@ -157,6 +175,7 @@ export default class EditBookModal extends Component {
                       rows='3'
                       placeholder={this.props.data.books.desc}
                       onChange={this.handleChangeDesc}
+                      required
                     />
                   </div>
                   <div className='modal-footer'>
@@ -165,7 +184,7 @@ export default class EditBookModal extends Component {
                       type='submit'
                       onSubmit={this.handleSubmit}
                     >
-                      Add Book
+                      Update Book
                     </button>
                     <button className='btn btn-secondary' data-dismiss='modal'>
                       Cancel
@@ -180,3 +199,9 @@ export default class EditBookModal extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return { genres: state.genres };
+};
+
+export default connect(mapStateToProps)(EditBookModal);

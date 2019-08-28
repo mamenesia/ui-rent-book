@@ -7,6 +7,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
 import { connect } from 'react-redux';
 import { getBooks } from '../Public/Actions/books';
 
@@ -43,21 +44,39 @@ class GridCard extends Component {
                       <CardActionArea>
                         <CardMedia
                           component='img'
-                          alt='The Hunter Games'
+                          alt={item.title}
                           height='200'
                           image={item.image_url}
                           title={item.title}
                         />
                         <CardContent>
-                          <Typography gutterBottom variant='h5' component='h2'>
-                            {item.title}
+                          <Chip
+                            size='small'
+                            label={item.status}
+                            color={
+                              // eslint-disable-next-line eqeqeq
+                              item.status == 'Available'
+                                ? 'primary'
+                                : 'secondary'
+                            }
+                          />
+                          <Chip
+                            size='small'
+                            variant='outlined'
+                            label={item.genre}
+                          />
+
+                          <Typography gutterBottom variant='h6' component='h2'>
+                            {item.title.length > 27
+                              ? item.title.substr(0, 27) + '...'
+                              : item.title}
                           </Typography>
                           <Typography
                             variant='body2'
                             color='textSecondary'
                             component='p'
                           >
-                            {item.desc.substr(0, 100)}
+                            {item.desc.substr(0, 100)}...
                           </Typography>
                         </CardContent>
                       </CardActionArea>

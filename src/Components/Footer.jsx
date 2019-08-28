@@ -58,7 +58,7 @@ export default function Footer() {
     <React.Fragment>
       <CssBaseline />
       {/* Footer */}
-      <footer className={classes.footer}>
+      <footer className={`${classes.footer} mt-5 mx-0`}>
         <Typography
           variant='subtitle1'
           align='center'

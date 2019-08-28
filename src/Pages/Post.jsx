@@ -21,62 +21,102 @@ import EditBookModal from '../Components/EditBookModal';
 import './style.css';
 
 import AuthService from '../Components/AuthService';
+import { connect } from 'react-redux';
+import {
+  deleteBook,
+  getBook,
+  rentBook,
+  returnBook
+} from '../Public/Actions/books';
 
 const Auth = new AuthService();
 
-export default class Blog extends Component {
+class Blog extends Component {
   constructor(props) {
     super(props);
     this.state = {
       books: []
     };
   }
-  componentDidMount = () => {
-    Axios.get(
-      `http://localhost:8080/books/show/${this.props.match.params.id}`,
-      {
-        headers: {
-          Authorization: process.env.REACT_APP_KEY
-        }
-      }
-    )
-      .then(res => {
-        this.setState({ books: res.data.result[0] });
-        console.log(res);
-        console.log(this.state);
-        console.log(this.props.match);
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    const book_id = this.props.match.params.id;
+    await this.props.dispatch(getBook(book_id));
+    this.setState({
+      books: this.props.books.bookList.filter(
+        // eslint-disable-next-line eqeqeq
+        book => book.book_id == book_id
+      )[0]
+    });
+    console.log(this.props.books.bookList);
+    console.log(this.state);
+    // Axios.get(
+    //   `http://localhost:8080/books/show/${this.props.match.params.id}`,
+    //   {
+    //     headers: {
+    //       Authorization: process.env.REACT_APP_KEY
+    //     }
+    //   }
+    // )
+    //   .then(res => {
+    //     this.setState({ books: res.data.result[0] });
+    //     console.log(res);
+    //     console.log(this.state);
+    //     console.log(this.props.match);
+    //   })
+    //   .catch(err => console.log(err));
   };
 
-  handleButton = e => {
-    if (String(e.target.value) === 'Available') {
-      Axios.patch(
-        `http://localhost:8080/books/rent/${this.props.match.params.id}`
-      )
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => console.log(err));
-    } else {
-      Axios.patch(
-        `http://localhost:8080/books/return/${this.props.match.params.id}`
-      )
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => console.log(err));
-    }
+  handleRentButton = async e => {
+    const book_id = this.props.match.params.id;
+    await this.props.dispatch(rentBook(book_id));
+    window.location.reload();
+    // Axios.patch(
+    //   `http://localhost:8080/books/rent/${this.props.match.params.id}`
+    // )
+    //   .then(res => {
+    //     if (res.status === 200) {
+    //       window.location.reload();
+    //     } else {
+    //       alert(
+    //         'Something went wrong, Please try again later or contact administrator'
+    //       );
+    //     }
+    //     console.log(res);
+    //   })
+    //   .catch(err => console.log(err));
+  };
+
+  handleReturnButton = async e => {
+    const book_id = this.props.match.params.id;
+    await this.props.dispatch(returnBook(book_id));
+    window.location.reload();
+    // Axios.patch(
+    //   `http://localhost:8080/books/return/${this.props.match.params.id}`
+    // )
+    //   .then(res => {
+    //     if (res.status === 200) {
+    //       window.location.reload();
+    //     } else {
+    //       alert(
+    //         'Something went wrong, Please try again later or contact administrator'
+    //       );
+    //     }
+    //     console.log(res);
+    //   })
+    //   .catch(err => console.log(err));
   };
 
   handleBackButton = e => {
     window.location = '/';
   };
 
-  handleDeleteButton = e => {
-    Axios.delete(`http://localhost:8080/books/${this.props.match.params.id}`)
-      .then(res => (window.location = '/'))
-      .catch(err => console.log(err));
+  handleDeleteButton = async e => {
+    const book_id = this.props.props.match.params.id;
+    await this.props.dispatch(deleteBook(book_id));
+    window.location = '/';
+    // Axios.delete(`http://localhost:8080/books/${this.props.match.params.id}`)
+    //   .then(res => (window.location = '/'))
+    //   .catch(err => console.log(err));
   };
   render() {
     const { books } = this.state;
@@ -130,7 +170,11 @@ export default class Blog extends Component {
             <Paper
               className='mainFeaturedPost'
               style={{
-                backgroundImage: `url(${books.image_url})`
+                backgroundImage:
+                  // eslint-disable-next-line eqeqeq
+                  books.image_url == undefined
+                    ? 'url(https://howfix.net/wp-content/uploads/2018/02/sIaRmaFSMfrw8QJIBAa8mA-article.png)'
+                    : `url(${books.image_url})`
               }}
             >
               {/* Increase the priority of the hero background image */}
@@ -164,7 +208,7 @@ export default class Blog extends Component {
                     <Hidden smDown>
                       <CardMedia
                         className='cardMedia'
-                        image={books.image_url}
+                        image={books.image_url ? books.image_url : ''}
                         title='Image title'
                       />
                     </Hidden>
@@ -196,7 +240,12 @@ export default class Blog extends Component {
                     <Typography variant='h4'>{books.title}</Typography>
                   </Grid>
                   <Grid item sm={4} align='right'>
-                    <Typography variant='h6' color='secondary'>
+                    <Typography
+                      variant='h6'
+                      color={
+                        books.status === 'Available' ? 'primary' : 'secondary'
+                      }
+                    >
                       {books.status}
                     </Typography>
                   </Grid>
@@ -228,12 +277,18 @@ export default class Blog extends Component {
                   <Grid item>
                     <Button
                       variant='contained'
-                      color='secondary'
+                      color={
+                        books.status === 'Available' ? 'primary' : 'secondary'
+                      }
                       // href='#contained-buttons'
                       className='button'
                       size='large'
                       fullWidth={true}
-                      onClick={this.handleButton}
+                      onClick={
+                        books.status === 'Available'
+                          ? this.handleRentButton
+                          : this.handleReturnButton
+                      }
                       value={books.status}
                     >
                       {books.status === 'Available' ? 'Borrow' : 'Return'}
@@ -250,3 +305,9 @@ export default class Blog extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return { books: state.books };
+};
+
+export default connect(mapStateToProps)(Blog);

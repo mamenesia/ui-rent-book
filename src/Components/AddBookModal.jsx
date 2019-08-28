@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import Axios from 'axios';
+// import Axios from 'axios';
 import { connect } from 'react-redux';
 import { getGenres } from '../Public/Actions/genres';
+import { addBook } from '../Public/Actions/books';
 
 class AddBookModal extends Component {
   constructor(props) {
@@ -24,22 +25,10 @@ class AddBookModal extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
-    Axios.post(`http://localhost:8080/books`, {
-      title: this.state.title,
-      image: this.state.image,
-      genre: this.state.genre,
-      desc: this.state.desc,
-      released_at: this.state.released_at,
-      available: this.state.available
-    })
-      .then(res => {
-        console.log(this.state);
-        console.log(this.props);
-        window.location.reload(true);
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    await this.props.dispatch(getGenres());
+    this.setState({ genres: this.props.genres });
+    console.log(this.props);
   };
 
   handleChangeTitle = e => {
@@ -61,10 +50,29 @@ class AddBookModal extends Component {
     this.setState({ released_at: e.target.value });
   };
 
-  componentDidMount = async () => {
-    await this.props.dispatch(getGenres());
-    this.setState({ genres: this.props.genres });
+  handleSubmit = async e => {
+    e.preventDefault();
+    const { title, image, genre, desc, released_at, available } = this.state;
+    await this.props.dispatch(
+      addBook(title, image, genre, desc, released_at, available)
+    );
+    console.log(this.state);
     console.log(this.props);
+    window.location.reload();
+    // Axios.post(`http://localhost:8080/books`, {
+    //   title: this.state.title,
+    //   image: this.state.image,
+    //   genre: this.state.genre,
+    //   desc: this.state.desc,
+    //   released_at: this.state.released_at,
+    //   available: this.state.available
+    // })
+    //   .then(res => {
+    //     console.log(this.state);
+    //     console.log(this.props);
+    //     window.location.reload(true);
+    //   })
+    //   .catch(err => console.log(err));
   };
   render() {
     const { genres } = this.state;
@@ -103,6 +111,7 @@ class AddBookModal extends Component {
                       id='title'
                       placeholder='The Book Title'
                       onChange={this.handleChangeTitle}
+                      required
                     />
                   </div>
                   <div className='form-group row d-flex justify-content-around'>
@@ -120,6 +129,7 @@ class AddBookModal extends Component {
                       name='image_url'
                       placeholder='Book Cover Url'
                       onChange={this.handleChangeImage}
+                      required
                     />
                   </div>
                   <div className='form-group row d-flex justify-content-around'>
@@ -137,6 +147,7 @@ class AddBookModal extends Component {
                       name='released_at'
                       placeholder='Date Released'
                       onSubmit={this.handleChangeDate}
+                      required
                     />
                   </div>
                   <div className='form-group row d-flex justify-content-around'>
@@ -151,6 +162,7 @@ class AddBookModal extends Component {
                       id='genre'
                       name='genre'
                       onChange={this.handleChangeGenre}
+                      required
                     >
                       {genres.genreList
                         ? genres.genreList.map((item, index) => {
@@ -175,6 +187,7 @@ class AddBookModal extends Component {
                       id='available'
                       name='available'
                       onChange={this.handleChangeStatus}
+                      required
                     >
                       <option value='1'>Available</option>
                       <option value='0'>Not Available</option>
@@ -193,6 +206,7 @@ class AddBookModal extends Component {
                       name='desc'
                       rows='3'
                       onChange={this.handleChangeDesc}
+                      required
                     />
                   </div>
                   <div className='modal-footer'>

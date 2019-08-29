@@ -3,15 +3,17 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { getGenres } from '../Public/Actions/genres';
 import { updateBook } from '../Public/Actions/books';
+import Swal from 'sweetalert2';
 
 class EditBookModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: null,
-      image: null,
-      genre: null,
-      desc: null,
+      book_id: this.props.data.books.book_id,
+      title: this.props.data.books.title,
+      image: this.props.data.books.image_url,
+      genre: this.props.data.books.genre,
+      desc: this.props.data.books.desc,
       genres: []
     };
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
@@ -25,10 +27,40 @@ class EditBookModal extends Component {
     e.preventDefault();
     const { title, image, genre, desc } = this.state;
     const book_id = this.props.props.match.params.id;
-    await this.props.dispatch(updateBook(book_id, title, image, genre, desc));
-    console.log(this.state);
-    console.log(this.props);
-    window.location.reload();
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Please make sure the data is valid!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, update the book!',
+      preConfirm: async () => {
+        try {
+          await this.props.dispatch(
+            updateBook(book_id, title, image, genre, desc)
+          );
+        } catch {
+          Swal.fire('Failed!', 'The book is failed to update', 'error');
+        }
+      }
+    }).then(result => {
+      if (result.value) {
+        Swal.fire({
+          title: 'Updated!',
+          text: 'The book has been updated.',
+          type: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        setInterval(() => window.location.reload(), 2200);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', 'Your process is cancelled', 'error');
+      }
+    });
+    // this.setState({title: })
+
     // Axios.patch(
     //   `http://localhost:8080/books/${this.props.props.match.params.id}`,
     //   {
@@ -45,8 +77,6 @@ class EditBookModal extends Component {
   };
 
   handleChangeTitle = e => {
-    console.log(this.props);
-    console.log(this.state);
     this.setState({ title: e.target.value });
   };
   handleChangeImage = e => {
@@ -146,6 +176,7 @@ class EditBookModal extends Component {
                       className='form-control col-sm-8'
                       id='genre'
                       name='genre'
+                      defaultValue={this.props.data.books.genre}
                       onChange={this.handleChangeGenre}
                       required
                     >
@@ -168,12 +199,12 @@ class EditBookModal extends Component {
                     >
                       Description
                     </label>
-                    <textarea
+                    <input
                       className='form-control col-sm-8'
                       id='desc'
                       name='desc'
                       rows='3'
-                      placeholder={this.props.data.books.desc}
+                      defaultValue={this.props.data.books.desc}
                       onChange={this.handleChangeDesc}
                       required
                     />

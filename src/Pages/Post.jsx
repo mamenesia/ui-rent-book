@@ -19,6 +19,7 @@ import Chip from '@material-ui/core/Chip';
 
 import EditBookModal from '../Components/EditBookModal';
 import './style.css';
+import Swal from 'sweetalert2';
 
 import AuthService from '../Components/AuthService';
 import { connect } from 'react-redux';
@@ -110,10 +111,39 @@ class Blog extends Component {
     window.location = '/';
   };
 
-  handleDeleteButton = async e => {
-    const book_id = this.props.props.match.params.id;
-    await this.props.dispatch(deleteBook(book_id));
-    window.location = '/';
+  handleDeleteButton = e => {
+    const book_id = this.props.match.params.id;
+    Swal.fire({
+      title: 'Are you sure to delete?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      preConfirm: async () => {
+        try {
+          await this.props.dispatch(deleteBook(book_id));
+        } catch {
+          Swal.fire('Failed!', 'The book is failed to delete', 'error');
+        }
+      }
+    }).then(result => {
+      if (result.value) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'The book has been deleted.',
+          type: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        setInterval(() => (window.location = '/'), 2200);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', 'Your process is cancelled', 'error');
+      }
+    });
+
+    // window.location = '/';
     // Axios.delete(`http://localhost:8080/books/${this.props.match.params.id}`)
     //   .then(res => (window.location = '/'))
     //   .catch(err => console.log(err));
@@ -255,7 +285,7 @@ class Blog extends Component {
                   color='textSecondary'
                   gutterBottom
                 >
-                  {String(Date(books.released_at)).substr(0, 16)}
+                  {String(books.released_at).substr(0, 10)}
                 </Typography>
                 <Divider />
                 <Typography align='justify' variant='body1'>

@@ -12,7 +12,7 @@ class AddBookModal extends Component {
       image: null,
       genre: null,
       desc: null,
-      released_at: null,
+      released_at: new Date(Date.now()),
       available: null,
       genres: []
     };
@@ -48,6 +48,7 @@ class AddBookModal extends Component {
   };
   handleChangeDate = e => {
     this.setState({ released_at: e.target.value });
+    console.log(this.state);
   };
 
   handleSubmit = async e => {
@@ -146,7 +147,7 @@ class AddBookModal extends Component {
                       id='released_at'
                       name='released_at'
                       placeholder='Date Released'
-                      onSubmit={this.handleChangeDate}
+                      onChange={this.handleChangeDate}
                       required
                     />
                   </div>

@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 export const login = (username, password) => {
   return {
     type: 'LOGIN_USER',
-    payload: Axios.post('http://localhost:8080/login', {
+    payload: Axios.post('http://localhost:8080/login' || 'https://remotemysql.com:3306/login', {
       username,
       password
     }).then(res => {
@@ -46,7 +46,7 @@ export const login = (username, password) => {
 export const register = (username, email, password) => {
   return {
     type: 'REGISTER_USER',
-    payload: Axios.post('http://localhost:8080/register', {
+    payload: Axios.post('http://localhost:8080/register' || 'https://remotemysql.com:3306/register', {
         username,
         email,
         password

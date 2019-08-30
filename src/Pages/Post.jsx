@@ -16,6 +16,7 @@ import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import Chip from '@material-ui/core/Chip';
+import decode from 'jwt-decode';
 
 import EditBookModal from '../Components/EditBookModal';
 import './style.css';
@@ -50,6 +51,7 @@ class Blog extends Component {
     });
     console.log(this.props.books.bookList);
     console.log(this.state);
+
     // Axios.get(
     //   `http://localhost:8080/books/show/${this.props.match.params.id}`,
     //   {
@@ -69,8 +71,44 @@ class Blog extends Component {
 
   handleRentButton = async e => {
     const book_id = this.props.match.params.id;
-    await this.props.dispatch(rentBook(book_id));
-    window.location.reload();
+    const token = localStorage.getItem('token');
+    const decoded = decode(token);
+    const user_id = decoded.id;
+    Swal.fire({
+      title: 'Are you sure to borrow the book?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, rent it!',
+      preConfirm: async () => {
+        try {
+          await this.props.dispatch(rentBook(book_id, user_id));
+        } catch {
+          Swal.fire('Failed!', 'The book is failed to borrow', 'error');
+        }
+      }
+    }).then(result => {
+      if (result.value) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'The book has been borrowed.',
+          type: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        setInterval(() => window.location.reload(), 2200);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: 'Cancelled',
+          text: 'Your process is cancelled',
+          type: 'error',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    });
     // Axios.patch(
     //   `http://localhost:8080/books/rent/${this.props.match.params.id}`
     // )
@@ -89,8 +127,45 @@ class Blog extends Component {
 
   handleReturnButton = async e => {
     const book_id = this.props.match.params.id;
-    await this.props.dispatch(returnBook(book_id));
-    window.location.reload();
+    const token = localStorage.getItem('token');
+    const decoded = decode(token);
+    const user_id = decoded.id;
+    // window.location.reload();
+    Swal.fire({
+      title: 'Are you sure to return the book?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, return it!',
+      preConfirm: async () => {
+        try {
+          await this.props.dispatch(returnBook(book_id, user_id));
+        } catch {
+          Swal.fire('Failed!', 'The book is failed to return', 'error');
+        }
+      }
+    }).then(result => {
+      if (result.value) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'The book has been returned.',
+          type: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        setInterval(() => window.location.reload(), 2200);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: 'Cancelled',
+          text: 'Your process is cancelled',
+          type: 'error',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    });
     // Axios.patch(
     //   `http://localhost:8080/books/return/${this.props.match.params.id}`
     // )
@@ -139,7 +214,13 @@ class Blog extends Component {
         });
         setInterval(() => (window.location = '/'), 2200);
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire('Cancelled', 'Your process is cancelled', 'error');
+        Swal.fire({
+          title: 'Cancelled',
+          text: 'Your process is cancelled',
+          type: 'error',
+          showConfirmButton: false,
+          timer: 2000
+        });
       }
     });
 
@@ -285,7 +366,7 @@ class Blog extends Component {
                   color='textSecondary'
                   gutterBottom
                 >
-                  {String(books.released_at).substr(0, 10)}
+                  {String(Date(books.released_at)).substr(0, 16)}
                 </Typography>
                 <Divider />
                 <Typography align='justify' variant='body1'>

@@ -67,20 +67,24 @@ export const getAvailableBooks = () => {
   }
 }
 
-export const rentBook = (book_id) => {
+export const rentBook = (book_id, user_id) => {
   return {
     type: 'RENT_BOOK',
     payload: Axios.patch(
-      `http://localhost:8080/books/rent/${book_id}`
+      `http://localhost:8080/books/rent/${book_id}`, {
+        user_id
+      }
     )
   }
 }
 
-export const returnBook = (book_id) => {
+export const returnBook = (book_id, user_id) => {
   return {
     type: 'RETURN_BOOK',
     payload: Axios.patch(
-      `http://localhost:8080/books/return/${book_id}`
+      `http://localhost:8080/books/return/${book_id}`, {
+        user_id
+      }
     )
   }
 }

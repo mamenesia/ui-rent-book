@@ -32,18 +32,22 @@ export default class Sidebar extends Component {
               }}
             />
             <p className='text-dark text-center font-weight-bold'>
-              {`${!Auth.loggedIn() ? 'Ordinary User' : 'User with Dedy Pic'}`}
+              {`${
+                !Auth.loggedIn()
+                  ? "Free User's Avatar"
+                  : "Registered User's  Avatar"
+              }`}
             </p>
             <li>
               <Link to='/explore' underline='none'>
-                <a href='#' className='nav-link font-weight-bold'>
+                <a href='!#' className='nav-link font-weight-bold'>
                   Explore
                 </a>
               </Link>
             </li>
-            <li>
-              <Link>
-                <a href='#' className='nav-link font-weight-bold'>
+            <li className={`${!Auth.loggedIn() ? 'd-none' : ''}`}>
+              <Link to='/history' underline='none'>
+                <a href='!#' className='nav-link font-weight-bold'>
                   History
                 </a>
               </Link>
@@ -51,7 +55,7 @@ export default class Sidebar extends Component {
             <li className={`${!Auth.loggedIn() ? 'd-none' : ''}`}>
               <Link>
                 <a
-                  href='#'
+                  href='!#'
                   className='nav-link font-weight-bold'
                   data-toggle='modal'
                   data-target='#AddBookModal'

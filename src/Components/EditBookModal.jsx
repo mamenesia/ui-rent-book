@@ -36,6 +36,7 @@ class EditBookModal extends Component {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, update the book!',
+      showLoaderOnConfirm: true,
       preConfirm: async () => {
         try {
           await this.props.dispatch(
@@ -55,9 +56,10 @@ class EditBookModal extends Component {
           showConfirmButton: false
         });
         setInterval(() => window.location.reload(), 2200);
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire('Cancelled', 'Your process is cancelled', 'error');
       }
+      // } else if (result.dismiss === Swal.DismissReason.cancel) {
+      //   Swal.fire('Cancelled', 'Your process is cancelled', 'error');
+      // }
     });
     // this.setState({title: })
 
@@ -74,6 +76,15 @@ class EditBookModal extends Component {
     //     window.location.reload(true);
     //   })
     //   .catch(err => console.log(err));
+  };
+  handleCancel = () => {
+    Swal.fire({
+      title: 'Cancelled',
+      text: 'Your process is cancelled',
+      type: 'error',
+      showConfirmButton: false,
+      timer: 2000
+    });
   };
 
   handleChangeTitle = e => {
@@ -217,7 +228,11 @@ class EditBookModal extends Component {
                     >
                       Update Book
                     </button>
-                    <button className='btn btn-secondary' data-dismiss='modal'>
+                    <button
+                      className='btn btn-secondary'
+                      data-dismiss='modal'
+                      onClick={this.handleCancel}
+                    >
                       Cancel
                     </button>
                   </div>

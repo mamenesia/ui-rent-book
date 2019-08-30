@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Axios from 'axios';
+// import Axios from 'axios';
 import AuthService from './AuthService';
+import { connect } from 'react-redux';
+import { register } from '../Public/Actions/user';
 
 class Register extends Component {
   constructor() {
@@ -19,26 +21,6 @@ class Register extends Component {
     this.Auth = new AuthService();
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
-    Axios.post('http://localhost:8080/register', {
-      username: this.state.username,
-      email: this.state.email,
-      password: this.state.password
-    })
-      .then(res => {
-        console.log(res.data);
-        if (res.status === 200) {
-          alert(res.data.message);
-          window.location = '/login';
-        }
-      })
-      .then(res => console.log(res))
-      .catch(err => {
-        alert('Please input valid data');
-        console.log('error =', err);
-      });
-  };
   handleChangeName = e => {
     this.setState({ username: e.target.value });
   };
@@ -47,6 +29,29 @@ class Register extends Component {
   };
   handleChangePass = e => {
     this.setState({ password: e.target.value });
+  };
+  handleSubmit = async e => {
+    e.preventDefault();
+    let { username, email, password } = this.state;
+    await this.props.dispatch(register(username, email, password));
+
+    // Axios.post('http://localhost:8080/register', {
+    //   username: this.state.username,
+    //   email: this.state.email,
+    //   password: this.state.password
+    // })
+    //   .then(res => {
+    //     console.log(res.data);
+    //     if (res.status === 200) {
+    //       alert(res.data.message);
+    //       window.location = '/login';
+    //     }
+    //   })
+    //   .then(res => console.log(res))
+    //   .catch(err => {
+    //     alert('Please input valid data');
+    //     console.log('error =', err);
+    //   });
   };
   render() {
     return (
@@ -118,4 +123,7 @@ class Register extends Component {
   }
 }
 
-export default Register;
+const mapStateToProps = state => {
+  return { user: [state.username, state.email, state.password] };
+};
+export default connect(mapStateToProps)(Register);

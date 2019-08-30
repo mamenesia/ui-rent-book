@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { getGenres } from '../Public/Actions/genres';
 import { addBook } from '../Public/Actions/books';
+import Swal from 'sweetalert2';
 
 class AddBookModal extends Component {
   constructor(props) {
@@ -54,12 +55,39 @@ class AddBookModal extends Component {
   handleSubmit = async e => {
     e.preventDefault();
     const { title, image, genre, desc, released_at, available } = this.state;
-    await this.props.dispatch(
-      addBook(title, image, genre, desc, released_at, available)
-    );
-    console.log(this.state);
-    console.log(this.props);
-    window.location.reload();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Please make sure the data is valid!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, add the book!',
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        try {
+          await this.props.dispatch(
+            addBook(title, image, genre, desc, released_at, available)
+          );
+        } catch {
+          Swal.fire('Failed!', 'The book is failed to add', 'error');
+        }
+      }
+    }).then(result => {
+      if (result.value) {
+        Swal.fire({
+          title: 'Added!',
+          text: 'The book has been added.',
+          type: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        setInterval(() => window.location.reload(), 2200);
+      }
+      // } else if (result.dismiss === Swal.DismissReason.cancel) {
+      //   Swal.fire('Cancelled', 'Your process is cancelled', 'error');
+      // }
+    });
     // Axios.post(`http://localhost:8080/books`, {
     //   title: this.state.title,
     //   image: this.state.image,
@@ -74,6 +102,16 @@ class AddBookModal extends Component {
     //     window.location.reload(true);
     //   })
     //   .catch(err => console.log(err));
+  };
+
+  handleCancel = () => {
+    Swal.fire({
+      title: 'Cancelled',
+      text: 'Your process is cancelled',
+      type: 'error',
+      showConfirmButton: false,
+      timer: 2000
+    });
   };
   render() {
     const { genres } = this.state;
@@ -165,6 +203,9 @@ class AddBookModal extends Component {
                       onChange={this.handleChangeGenre}
                       required
                     >
+                      <option selected disabled>
+                        Genre
+                      </option>
                       {genres.genreList
                         ? genres.genreList.map((item, index) => {
                             return (
@@ -190,6 +231,9 @@ class AddBookModal extends Component {
                       onChange={this.handleChangeStatus}
                       required
                     >
+                      <option selected disabled>
+                        Status
+                      </option>
                       <option value='1'>Available</option>
                       <option value='0'>Not Available</option>
                     </select>
@@ -218,7 +262,11 @@ class AddBookModal extends Component {
                     >
                       Add Book
                     </button>
-                    <button className='btn btn-secondary' data-dismiss='modal'>
+                    <button
+                      className='btn btn-secondary'
+                      data-dismiss='modal'
+                      onClick={this.handleCancel}
+                    >
                       Cancel
                     </button>
                   </div>

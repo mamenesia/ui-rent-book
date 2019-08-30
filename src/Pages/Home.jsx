@@ -8,6 +8,7 @@ import GridCard from '../Layout/GridCard';
 import Explore from './Explore';
 import Category from './Category';
 import Search from './Search';
+import History from './History';
 
 import App from '../App';
 
@@ -16,12 +17,13 @@ export default class Home extends Component {
     return (
       <Router>
         <Switch>
-          <Route exact path='/explore' component={Explore} />
-          <Route exact path='/genre/:genre' component={Category} />
-          <Route exact path='/search/:search' component={Search} />
           <Route exact path='/show/:id' component={App} />
           <Route exact path='/login' component={App} />
           <Route exact path='/register' component={App} />
+          <Route exact path='/history' component={History} />
+          <Route exact path='/explore' component={Explore} />
+          <Route exact path='/genre/:genre' component={Category} />
+          <Route exact path='/search/:search' component={Search} />
           <div className='wrapper'>
             <Sidebar />
             <div id='content'>

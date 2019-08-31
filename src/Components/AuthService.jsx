@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 export default class AuthService {
   constructor(domain) {
-    this.domain = domain || 'http://localhost:8080';
+    this.domain = domain || `${process.env.REACT_APP_PORT}`;
     this.fetch = this.fetch.bind(this);
     this.login = this.login.bind(this);
     this.getProfile = this.getProfile.bind(this);

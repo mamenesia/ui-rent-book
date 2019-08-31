@@ -17,7 +17,7 @@ export default class Search extends Component {
   };
   componentDidMount = () => {
     Axios.get(
-      `http://localhost:8080/books?search=${this.props.match.params.search}`,
+      `${process.env.REACT_APP_PORT}/books?search=${this.props.match.params.search}`,
       {
         headers: {
           Authorization: process.env.REACT_APP_KEY

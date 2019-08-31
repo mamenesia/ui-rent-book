@@ -51,7 +51,7 @@ class EditBookModal extends Component {
     await this.props.dispatch(getGenres());
     this.setState({ genres: this.props.genres });
     console.log(this.props);
-    // Axios.get(`http://localhost:8080/books/genre`, {
+    // Axios.get(`${process.env.REACT_APP_PORT}/books/genre`, {
     //   headers: {
     //     Authorization: process.env.REACT_APP_KEY
     //   }
@@ -105,7 +105,7 @@ class EditBookModal extends Component {
     // this.setState({title: })
 
     // Axios.patch(
-    //   `http://localhost:8080/books/${this.props.props.match.params.id}`,
+    //   `${process.env.REACT_APP_PORT}/books/${this.props.props.match.params.id}`,
     //   {
     //     title: this.state.title,
     //     image: this.state.image,

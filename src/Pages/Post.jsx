@@ -74,7 +74,7 @@ class Blog extends Component {
     console.log(this.state);
 
     // Axios.get(
-    //   `http://localhost:8080/books/show/${this.props.match.params.id}`,
+    //   `${process.env.REACT_APP_PORT}/books/show/${this.props.match.params.id}`,
     //   {
     //     headers: {
     //       Authorization: process.env.REACT_APP_KEY
@@ -131,7 +131,7 @@ class Blog extends Component {
       }
     });
     // Axios.patch(
-    //   `http://localhost:8080/books/rent/${this.props.match.params.id}`
+    //   `${process.env.REACT_APP_PORT}/books/rent/${this.props.match.params.id}`
     // )
     //   .then(res => {
     //     if (res.status === 200) {
@@ -188,7 +188,7 @@ class Blog extends Component {
       }
     });
     // Axios.patch(
-    //   `http://localhost:8080/books/return/${this.props.match.params.id}`
+    //   `${process.env.REACT_APP_PORT}/books/return/${this.props.match.params.id}`
     // )
     //   .then(res => {
     //     if (res.status === 200) {
@@ -246,7 +246,7 @@ class Blog extends Component {
     });
 
     // window.location = '/';
-    // Axios.delete(`http://localhost:8080/books/${this.props.match.params.id}`)
+    // Axios.delete(`${process.env.REACT_APP_PORT}/books/${this.props.match.params.id}`)
     //   .then(res => (window.location = '/'))
     //   .catch(err => console.log(err));
   };

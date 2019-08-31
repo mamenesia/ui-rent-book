@@ -17,7 +17,7 @@ export default class Explore extends Component {
   };
 
   componentDidMount = () => {
-    Axios.get('http://localhost:8080/books?limit=100', {
+    Axios.get(`${process.env.REACT_APP_PORT}/books?limit=100`, {
       headers: {
         Authorization: process.env.REACT_APP_KEY
       }

@@ -48,7 +48,7 @@ class Carousel extends Component {
     });
     console.log(this.props);
     console.log(this.state);
-    // Axios.get('http://localhost:8080/books/rent', {
+    // Axios.get('${process.env.REACT_APP_PORT}/books/rent', {
     //   headers: {
     //     Authorization: process.env.REACT_APP_KEY
     //   }

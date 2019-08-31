@@ -17,7 +17,7 @@ export default class Category extends Component {
   };
   componentDidMount = () => {
     Axios.get(
-      `http://localhost:8080/books?genre=${this.props.match.params.genre}`,
+      `${process.env.REACT_APP_PORT}/books?genre=${this.props.match.params.genre}`,
       {
         headers: {
           Authorization: process.env.REACT_APP_KEY

@@ -35,7 +35,7 @@ class Register extends Component {
     let { username, email, password } = this.state;
     await this.props.dispatch(register(username, email, password));
 
-    // Axios.post('http://localhost:8080/register', {
+    // Axios.post('${process.env.REACT_APP_PORT}/register', {
     //   username: this.state.username,
     //   email: this.state.email,
     //   password: this.state.password

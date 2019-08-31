@@ -37,13 +37,17 @@ export const addBook = (title, image, genre, desc, released_at, available) => {
 export const updateBook = (book_id, title, image, genre, desc) => {
   return {
     type: 'UPDATE_BOOK',
-    payload: Axios.patch(`http: //localhost:8080/books/${book_id}`, {
+    payload: Axios.patch(`http://localhost:8080/books/${book_id}`, {
       // payload: Axios.patch(`https://remotemysql.com:3306/books/${book_id}`, {
       title,
       image,
       genre,
       desc
-    })
+    }).then(result => result.send({
+      status: 200,
+      message: 'Book updated',
+      result
+    })).catch(err => console.log(err))
   }
 }
 

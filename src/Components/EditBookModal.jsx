@@ -9,11 +9,11 @@ class EditBookModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      book_id: this.props.data.books.book_id,
-      title: this.props.data.books.title,
-      image: this.props.data.books.image_url,
-      genre: this.props.data.books.genre,
-      desc: this.props.data.books.desc,
+      book_id: props.data.books.book_id,
+      title: props.data.books.title,
+      image: props.data.books.image_url,
+      genre: props.data.books.genre,
+      desc: props.data.books.desc,
       genres: []
     };
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
@@ -22,6 +22,47 @@ class EditBookModal extends Component {
     this.handleChangeDesc = this.handleChangeDesc.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  handleCancel = () => {
+    Swal.fire({
+      title: 'Cancelled',
+      text: 'Your process is cancelled',
+      type: 'error',
+      showConfirmButton: false,
+      timer: 2000
+    });
+  };
+
+  handleChangeTitle = e => {
+    this.setState({ title: e.target.value });
+    console.log(this.state.title);
+  };
+  handleChangeImage = e => {
+    this.setState({ image: e.target.value });
+  };
+  handleChangeGenre = e => {
+    this.setState({ genre: e.target.value });
+  };
+  handleChangeDesc = e => {
+    this.setState({ desc: e.target.value });
+  };
+
+  componentDidMount = async () => {
+    await this.props.dispatch(getGenres());
+    this.setState({ genres: this.props.genres });
+    console.log(this.props);
+    // Axios.get(`http://localhost:8080/books/genre`, {
+    //   headers: {
+    //     Authorization: process.env.REACT_APP_KEY
+    //   }
+    // })
+    //   .then(res => {
+    //     this.setState({ books: res.data.result });
+    //     console.log(this.state);
+    //     console.log(this.props.props.match.params.id);
+    //   })
+    //   .catch(err => console.log(err));
+  };
 
   handleSubmit = async e => {
     e.preventDefault();
@@ -74,45 +115,6 @@ class EditBookModal extends Component {
     // )
     //   .then(res => {
     //     window.location.reload(true);
-    //   })
-    //   .catch(err => console.log(err));
-  };
-  handleCancel = () => {
-    Swal.fire({
-      title: 'Cancelled',
-      text: 'Your process is cancelled',
-      type: 'error',
-      showConfirmButton: false,
-      timer: 2000
-    });
-  };
-
-  handleChangeTitle = e => {
-    this.setState({ title: e.target.value });
-  };
-  handleChangeImage = e => {
-    this.setState({ image: e.target.value });
-  };
-  handleChangeGenre = e => {
-    this.setState({ genre: e.target.value });
-  };
-  handleChangeDesc = e => {
-    this.setState({ desc: e.target.value });
-  };
-
-  componentDidMount = async () => {
-    await this.props.dispatch(getGenres());
-    this.setState({ genres: this.props.genres });
-    console.log(this.props);
-    // Axios.get(`http://localhost:8080/books/genre`, {
-    //   headers: {
-    //     Authorization: process.env.REACT_APP_KEY
-    //   }
-    // })
-    //   .then(res => {
-    //     this.setState({ books: res.data.result });
-    //     console.log(this.state);
-    //     console.log(this.props.props.match.params.id);
     //   })
     //   .catch(err => console.log(err));
   };

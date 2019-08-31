@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import AddBookModal from './AddBookModal';
 import AuthService from './AuthService';
 import AdminImg from '../Admin.png';
-import UserImg from '../User2.jpg';
+import UserImg from '../User3.png';
 import decode from 'jwt-decode';
 
 const Auth = new AuthService();

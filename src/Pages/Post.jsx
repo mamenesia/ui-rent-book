@@ -30,6 +30,7 @@ import {
   rentBook,
   returnBook
 } from '../Public/Actions/books';
+import { getHistory } from '../Public/Actions/history';
 
 const Auth = new AuthService();
 
@@ -37,18 +38,38 @@ class Blog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      history: []
     };
   }
   componentDidMount = async () => {
     const book_id = this.props.match.params.id;
+    const token = localStorage.getItem('token');
+
     await this.props.dispatch(getBook(book_id));
+    await this.props.dispatch(getHistory());
     this.setState({
       books: this.props.books.bookList.filter(
         // eslint-disable-next-line eqeqeq
         book => book.book_id == book_id
       )[0]
     });
+    if (token) {
+      const decoded = decode(token);
+      this.setState({
+        history: this.props.history.historyData.filter(history => {
+          return (
+            // eslint-disable-next-line eqeqeq
+            history.book_id == book_id &&
+            // eslint-disable-next-line eqeqeq
+            history.user_id == decoded.id &&
+            // eslint-disable-next-line eqeqeq
+            history.return_at == 'false'
+          );
+        })
+      });
+    }
+
     console.log(this.props.books.bookList);
     console.log(this.state);
 
@@ -366,7 +387,7 @@ class Blog extends Component {
                   color='textSecondary'
                   gutterBottom
                 >
-                  {String(Date(books.released_at)).substr(0, 16)}
+                  {String(books.released_at).substr(0, 16)}
                 </Typography>
                 <Divider />
                 <Typography align='justify' variant='body1'>
@@ -402,7 +423,11 @@ class Blog extends Component {
                       }
                       value={books.status}
                     >
-                      {books.status === 'Available' ? 'Borrow' : 'Return'}
+                      {books.status !== 'Available'
+                        ? this.state.history.length > 0
+                          ? 'Return'
+                          : 'This book is still borrowed by someone else'
+                        : 'Borrow'}
                     </Button>
                   </Grid>
                 </div>
@@ -418,7 +443,7 @@ class Blog extends Component {
 }
 
 const mapStateToProps = state => {
-  return { books: state.books };
+  return { books: state.books, history: state.history };
 };
 
 export default connect(mapStateToProps)(Blog);

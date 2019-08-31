@@ -86,7 +86,9 @@ class History extends Component {
                       <TableCell align='center' width='15%'>
                         BOOK ID
                       </TableCell>
-                      <TableCell align='center'>BOOK TITLE</TableCell>
+                      <TableCell width='20%' align='center'>
+                        BOOK TITLE
+                      </TableCell>
                       <TableCell align='center'>RENT DATE</TableCell>
                       <TableCell align='center'>EXPIRED AT</TableCell>
                       <TableCell align='center'>RETURN DATE</TableCell>
@@ -102,7 +104,7 @@ class History extends Component {
                             {item.book_id}
                           </TableCell>
                           <TableCell align='center'>
-                            {item.title.substr(0, 40)}
+                            {item.title.substr(0, 19)}
                           </TableCell>
                           <TableCell align='center'>
                             {Date(item.rent_at).substr(0, 16)}
@@ -146,7 +148,7 @@ class History extends Component {
                       <TableCell align='center' width='15%'>
                         BOOK ID
                       </TableCell>
-                      <TableCell width='30%' align='center'>
+                      <TableCell width='20%' align='center'>
                         BOOK TITLE
                       </TableCell>
                       <TableCell align='center'>RENT DATE</TableCell>
@@ -161,7 +163,7 @@ class History extends Component {
                           {item.book_id}
                         </TableCell>
                         <TableCell align='center'>
-                          {item.title.substr(0, 40)}
+                          {item.title.substr(0, 19)}
                         </TableCell>
                         <TableCell align='center'>
                           {Date(item.rent_at).substr(0, 16)}

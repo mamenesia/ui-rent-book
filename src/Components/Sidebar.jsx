@@ -4,12 +4,18 @@ import { Link } from 'react-router-dom';
 import AddBookModal from './AddBookModal';
 import AuthService from './AuthService';
 import AdminImg from '../Admin.png';
-import UserImg from '../User.jpg';
+import UserImg from '../User2.jpg';
+import decode from 'jwt-decode';
 
 const Auth = new AuthService();
 
 export default class Sidebar extends Component {
   render() {
+    const token = localStorage.getItem('token');
+    let decoded;
+    if (token) {
+      decoded = decode(token);
+    }
     return (
       <Fragment>
         <nav id='sidebar'>
@@ -35,7 +41,7 @@ export default class Sidebar extends Component {
               {`${
                 !Auth.loggedIn()
                   ? "Free User's Avatar"
-                  : "Registered User's  Avatar"
+                  : `Hello, ${decoded.username}`
               }`}
             </p>
             <li>

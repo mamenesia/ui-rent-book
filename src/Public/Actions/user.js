@@ -9,6 +9,7 @@ export const login = (username, password) => {
       username,
       password
     }).then(res => {
+      console.log(res)
       // eslint-disable-next-line eqeqeq
       if (res.data.status == 200) {
         const token = res.data.token;

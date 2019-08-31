@@ -110,7 +110,7 @@ class History extends Component {
                             {Date(item.rent_at).substr(0, 16)}
                           </TableCell>
                           <TableCell align='center'>
-                            {item.expired_at.substr(0, 16)}
+                            {Date(item.expired_at).substr(0, 16)}
                           </TableCell>
                           <TableCell align='center'>
                             {/* eslint-disable-next-line eqeqeq */}
@@ -169,7 +169,7 @@ class History extends Component {
                           {Date(item.rent_at).substr(0, 16)}
                         </TableCell>
                         <TableCell align='center'>
-                          {item.expired_at.substr(0, 16)}
+                          {Date(item.expired_at).substr(0, 16)}
                         </TableCell>
                         <TableCell align='center'>
                           {/* eslint-disable-next-line eqeqeq */}
